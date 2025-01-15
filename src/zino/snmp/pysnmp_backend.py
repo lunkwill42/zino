@@ -4,7 +4,6 @@ import logging
 import os
 import threading
 from collections import defaultdict
-from dataclasses import dataclass
 from functools import reduce
 from ipaddress import ip_address
 from typing import Any, NamedTuple, Sequence, Tuple, Union
@@ -461,7 +460,7 @@ class SNMP:
     @staticmethod
     def _object_type_to_mib_object(object_type: ObjectType) -> MibObject:
         oid = OID(str(object_type[0]))
-        value = _mib_value_to_python(object_type[1])
+        value = mib_value_to_python(object_type[1])
         return MibObject(oid, value)
 
     @classmethod
@@ -501,7 +500,7 @@ class SNMP:
 def _convert_varbind(ident: ObjectIdentity, value: ObjectType) -> SNMPVarBind:
     """Converts a PySNMP varbind pair to an Identifier/value pair"""
     mib, obj, indices = ident.getMibSymbol()
-    value = _mib_value_to_python(value)
+    value = mib_value_to_python(value)
     row_index = reduce(lambda acc, index: acc + _index_to_tuple(index), indices, ())
     return Identifier(mib, obj, OID(row_index)), value
 
@@ -520,7 +519,7 @@ def _index_to_tuple(index: ObjectIdentity) -> Tuple[int, ...]:
                 return (int(index),)
 
 
-def _mib_value_to_python(value: SupportedTypes) -> Union[str, int, OID]:
+def mib_value_to_python(value: SupportedTypes) -> Union[str, int, OID]:
     """Translates various PySNMP mib value objects to plainer Python objects, such as strings, integers or OIDs"""
     if isinstance(value, univ.Integer):
         value = int(value) if not value.namedValues else value.prettyPrint()
