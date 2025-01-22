@@ -26,6 +26,7 @@ dependencies = [
     "pysnmplib",
     "aiodns",
     "tomli; python_version < '3.11'",
+    "netsnmp-cffi @ git+https://gitlab.sikt.no/morten.brekkevold/netsnmp-cffi.git@0.1.5#egg=netsnmp-cffi",
 ]
 dynamic = ["version"]
 
